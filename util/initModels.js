@@ -18,9 +18,9 @@ const initModels = () => {
   User.hasOne(Cart);
   Cart.belongsTo(User);
 
-  //1<-->M
-  User.hasMany(Product);
-  Product.belongsTo(User);
+  // //1<-->M
+  // User.hasMany(Product);
+  // Product.belongsTo(User);
 
   //M<-->M
   Cart.belongsToMany(Product, { through: ProductInCart });
