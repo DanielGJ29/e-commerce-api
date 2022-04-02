@@ -5,6 +5,8 @@ const dotenv = require('dotenv');
 // Models
 const { User } = require('../models/user.model');
 const {Product} = require('../models/product.model');
+const {Cart}= require('../Models/cart.model');
+const {Order} = require ('../Models/order.model');
 
 // Utils
 const { catchAsync } = require('../util/catchAsync');
@@ -25,7 +27,7 @@ exports.loginUser = catchAsync(async (req, res, next) => {
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return next(new AppError(400, 'Credentials are invalid'));
   }
-  console.log(process.env.JWT_SECRET);
+
 
   // Create JWT
   const token = await jwt.sign(
@@ -45,7 +47,8 @@ exports.loginUser = catchAsync(async (req, res, next) => {
 exports.getAllUsers = catchAsync(async (req, res, next) => {
   const users = await User.findAll({
     attributes: { exclude: ['password'] },
-    where: { status: 'active' }
+    where: { status: 'active' },
+
   });
 
   res.status(200).json({ status: 'success', data: { users } });
@@ -103,4 +106,44 @@ exports.getUserProducts = catchAsync(async (req, res, next) => {
   const products = await Product.findAll({where:{userId:id}});
 
   res.status(200).json({ status:'success', data:products })
-})
+});
+
+
+//?ORDERS
+
+exports.getUsersOrders = catchAsync(async (req, res, next) => {
+  // Get the user in session
+  const { currentUser } = req;
+
+  const orders = await Order.findAll({ where: { userId: currentUser.id } });
+
+  res.status(200).json({
+    status: 'success',
+    data: { orders }
+  });
+});
+
+exports.getOrderById = catchAsync(async (req, res, next) => {
+  const { id } = req.params;
+
+  const order = await Order.findOne({
+    where: { id },
+    include: [
+      {
+        model: Cart,
+        include: [
+          { model: Product, through: { where: { status: 'purchased' } } }
+        ]
+      }
+    ]
+  });
+
+  if (!order) {
+    return next(new AppError(404, 'No order found with that id'));
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: { order }
+  });
+});

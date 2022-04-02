@@ -18,10 +18,6 @@ const initModels = () => {
   User.hasOne(Cart);
   Cart.belongsTo(User);
 
-  // //1<-->M
-  // User.hasMany(Product);
-  // Product.belongsTo(User);
-
   //M<-->M
   Cart.belongsToMany(Product, { through: ProductInCart });
   Product.belongsToMany(Cart, { through: ProductInCart });
@@ -29,6 +25,10 @@ const initModels = () => {
   //1<-->1
   Cart.hasOne(Order);
   Order.belongsTo(Cart);
+
+  //   // //1<-->M
+  //  User.hasMany(User);
+  // /Product.belongsTo(User);
 };
 
 module.exports = { initModels };

@@ -10,6 +10,7 @@ const { globalErrorHandler } = require('./controllers/error.controller');
 // Routers
 const { usersRouter } = require('./routes/users.routes');
 const { productsRouter } = require('./routes/products.routes');
+const {cartRouter} = require('./routes/cart.routes');
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use(morga('dev'));
 // Endpoints
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/products', productsRouter);
+app.use('/api/v1/cart', cartRouter);
 
 app.use(globalErrorHandler);
 

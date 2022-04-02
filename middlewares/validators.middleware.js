@@ -4,7 +4,7 @@ const { body, validationResult } = require('express-validator');
 const { appError } = require('../util/appError');
 const { catchAsync } = require('../util/catchAsync');
 
-//Products
+//?Products
 exports.createProductValidations = [
   body('title')
     .isString()
@@ -26,6 +26,20 @@ exports.createProductValidations = [
     .withMessage('Quatity must be a number')
     .custom((value) => value > 0)
     .withMessage('Quantity must be greater tha 0')
+];
+
+//? Cart validations
+exports.productInCartValidation = [
+  body('productId')
+    .isNumeric()
+    .withMessage('Product id must be a number')
+    .custom((value) => value > 0)
+    .withMessage('Must provide a valid id'),
+  body('quantity')
+    .isNumeric()
+    .withMessage('Quantity must be a number')
+    .custom((value) => value > 0)
+    .withMessage('Quantity must be greater than 0')
 ];
 
 exports.validateResult = catchAsync(async (req, res, next) => {
