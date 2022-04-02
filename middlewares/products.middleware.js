@@ -8,8 +8,10 @@ const { catchAsync } = require('../util/catchAsync');
 
 exports.productExists = catchAsync(async (req, res, next) => {
   const { id } = req.params;
+  const { productId } = req.body;
+
   const product = await Product.findOne({
-    where: { status: 'active', id },
+    where: { status: 'active', id: id || productId },
     include: [{ model: User, attributes: { exclude: ['password'] } }]
   });
 
@@ -30,5 +32,3 @@ exports.productOwner = catchAsync(async (req, res, next) => {
   }
   next();
 });
-
-
