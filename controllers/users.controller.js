@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 
 // Models
 const { User } = require('../models/user.model');
+const {Product} = require('../models/product.model');
 
 // Utils
 const { catchAsync } = require('../util/catchAsync');
@@ -24,6 +25,7 @@ exports.loginUser = catchAsync(async (req, res, next) => {
   if (!user || !(await bcrypt.compare(password, user.password))) {
     return next(new AppError(400, 'Credentials are invalid'));
   }
+  console.log(process.env.JWT_SECRET);
 
   // Create JWT
   const token = await jwt.sign(
@@ -70,8 +72,6 @@ exports.createUser = catchAsync(async (req, res, next) => {
 
   newUser.password = undefined;
 
-  // Send mail to newly created account
-  //await new Email(email).send();
 
   res.status(201).json({
     status: 'success',
@@ -96,3 +96,11 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
 
   res.status(204).json({ status: 'success' });
 });
+
+exports.getUserProducts = catchAsync(async (req, res, next) => {
+  const {id} = req.currentUser;
+
+  const products = await Product.findAll({where:{userId:id}});
+
+  res.status(200).json({ status:'success', data:products })
+})

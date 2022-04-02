@@ -1,5 +1,4 @@
 // Models
-const { append } = require('express/lib/response');
 const { User } = require('../Models/user.model');
 const { Product } = require('../Models/product.model');
 
@@ -31,3 +30,5 @@ exports.productOwner = catchAsync(async (req, res, next) => {
   }
   next();
 });
+
+
